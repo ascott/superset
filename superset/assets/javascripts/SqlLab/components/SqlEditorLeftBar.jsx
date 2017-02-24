@@ -112,9 +112,10 @@ ${this.props.queryEditor.schema}/${input}`;
     const actualDbId = dbId || this.props.queryEditor.dbId;
     if (actualDbId) {
       this.setState({ schemaLoading: true });
-      const url = `/superset/schemas/${actualDbId}/`;
+      const url = `/databasetablesasync/api/read?_flt_0_id=${actualDbId}`;
       $.get(url, (data) => {
-        const schemaOptions = data.schemas.map((s) => ({ value: s, label: s }));
+        const schemas = data.result[0].all_schema_names;
+        const schemaOptions = schemas.map((s) => ({ value: s, label: s }));
         this.setState({ schemaOptions });
         this.setState({ schemaLoading: false });
       });
