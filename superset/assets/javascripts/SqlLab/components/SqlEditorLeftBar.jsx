@@ -1,9 +1,13 @@
 const $ = window.$ = require('jquery');
 import React from 'react';
-import Select from 'react-select';
 import { Label, Button } from 'react-bootstrap';
 import TableElement from './TableElement';
 import AsyncSelect from '../../components/AsyncSelect';
+import Select from 'react-virtualized-select';
+import createFilterOptions from 'react-select-fast-filter-options';
+import 'react-select/dist/react-select.css'
+import 'react-virtualized/styles.css'
+import 'react-virtualized-select/styles.css'
 
 const propTypes = {
   queryEditor: React.PropTypes.object.isRequired,
@@ -139,6 +143,8 @@ class SqlEditorLeftBar extends React.PureComponent {
       networkAlert = <p><Label bsStyle="danger">OFFLINE</Label></p>;
     }
     const shouldShowReset = window.location.search === '?reset=1';
+    const options = this.state.tableOptions;
+    const filterOptions = createFilterOptions({ options });
     return (
       <div className="scrollbar-container">
         <div className="clearfix sql-toolbar scrollbar-content">
@@ -184,6 +190,7 @@ class SqlEditorLeftBar extends React.PureComponent {
               placeholder={`Add a table (${this.state.tableOptions.length})`}
               autosize={false}
               onChange={this.changeTable.bind(this)}
+              filterOptions={filterOptions}
               options={this.state.tableOptions}
             />
           </div>
