@@ -3,7 +3,6 @@ import * as Actions from '../actions';
 import React from 'react';
 
 import TabbedSqlEditors from './TabbedSqlEditors';
-import QueryAutoRefresh from './QueryAutoRefresh';
 import QuerySearch from './QuerySearch';
 import Alerts from './Alerts';
 
@@ -57,7 +56,6 @@ class App extends React.PureComponent {
     } else {
       content = (
         <div>
-          <QueryAutoRefresh />
           <TabbedSqlEditors editorHeight={this.state.contentHeight} />
         </div>
       );
