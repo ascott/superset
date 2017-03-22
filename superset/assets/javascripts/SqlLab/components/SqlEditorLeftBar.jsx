@@ -58,19 +58,29 @@ class SqlEditorLeftBar extends React.PureComponent {
   resetState() {
     this.props.actions.resetState();
   }
+  getTablesApiUrl(dbId, schema, substr) {
+    let url = `/superset/tables/${dbId}`;
+    let args = [];
+    if (schema) args.push(`schema=${schema}`);
+    if (substr) args.push(`substr=${substr}`);
+    // add args to url if there are any
+    if (args.length > 0) url = `${url}?${args.join('&')}`;
+    return url;
+  }
   getTableNamesBySubStr(input) {
     if (!this.props.queryEditor.dbId || !input) {
       return Promise.resolve({ options: [] });
     }
-    const url = `/superset/tables/${this.props.queryEditor.dbId}/\
-${this.props.queryEditor.schema}/${input}`;
+
+    const { schema, dbId } = this.props.queryEditor;
+    const url = this.getTablesApiUrl(dbId, schema, input);
     return $.get(url).then((data) => ({ options: data.options }));
   }
   // TODO: move fetching methods to the actions.
   fetchTables(dbId, schema, substr) {
     if (dbId) {
       this.setState({ tableLoading: true, tableOptions: [] });
-      const url = `/superset/tables/${dbId}/${schema}/${substr}/`;
+      const url = this.getTablesApiUrl(dbId, schema, substr);
       $.get(url, (data) => {
         this.setState({
           tableLoading: false,
@@ -148,6 +158,8 @@ ${this.props.queryEditor.schema}/${input}`;
               mutator={this.dbMutator.bind(this)}
               placeholder="Select a database"
             />
+          </div>
+          <div className="m-t-5">
             <Select
               name="select-schema"
               placeholder={`Select a schema (${this.state.schemaOptions.length})`}
@@ -164,29 +176,16 @@ ${this.props.queryEditor.schema}/${input}`;
             />
           </div>
           <div className="m-t-5">
-            {this.props.queryEditor.schema &&
-              <Select
-                name="select-table"
-                ref="selectTable"
-                isLoading={this.state.tableLoading}
-                value={this.state.tableName}
-                placeholder={`Add a table (${this.state.tableOptions.length})`}
-                autosize={false}
-                onChange={this.changeTable.bind(this)}
-                options={this.state.tableOptions}
-              />
-            }
-            {!this.props.queryEditor.schema &&
-              <Select.Async
-                name="async-select-table"
-                ref="selectTable"
-                value={this.state.tableName}
-                placeholder={"Type to search ..."}
-                autosize={false}
-                onChange={this.changeTable.bind(this)}
-                loadOptions={this.getTableNamesBySubStr.bind(this)}
-              />
-            }
+            <Select
+              name="select-table"
+              ref="selectTable"
+              isLoading={this.state.tableLoading}
+              value={this.state.tableName}
+              placeholder={`Add a table (${this.state.tableOptions.length})`}
+              autosize={false}
+              onChange={this.changeTable.bind(this)}
+              options={this.state.tableOptions}
+            />
           </div>
           <hr />
           <div className="m-t-5">
