@@ -1261,11 +1261,18 @@ class Superset(BaseSupersetView):
 
     @api
     @has_access_api
-    @expose("/tables/<db_id>/<schema>/<substr>/")
-    def tables(self, db_id, schema, substr):
-        """Endpoint to fetch the list of tables for given database"""
-        schema = utils.js_string_to_python(schema)
-        substr = utils.js_string_to_python(substr)
+    @expose("/tables/<db_id>", methods=['GET'])
+    def tables(self, db_id):
+        """Endpoint to fetch the list of tables for given database
+
+        should return a list of tables for a db
+        - with schema, and when no schema is given,
+        - with substring, and when no substring is given
+        """
+
+        schema = request.args.get('schema') or None
+        substr = request.args.get('substr') or None
+
         database = db.session.query(models.Database).filter_by(id=db_id).one()
         table_names = self.accessible_by_user(
             database, database.all_table_names(schema), schema)
