@@ -80,14 +80,16 @@ function bigNumberVis(slice, payload) {
    .attr('fill', 'black');
 
   // Printing big number subheader text
-  if (json.subheader !== null) {
+  if (json.subheader) {
+    const fontSize = (width / json.subheader.length) * 1.5;
     g.append('text')
-    .attr('x', width / 2)
-    .attr('y', (height / 16) * 12)
-    .text(json.subheader)
-    .attr('id', 'subheader_text')
-    .style('font-size', d3.min([height, width]) / 8)
-    .style('text-anchor', 'middle');
+     .attr('x', width / 2)
+     .attr('y', (height / 16) * 12)
+     .text(json.subheader)
+     .attr('id', 'subheader_text')
+     .attr('font-family', 'Roboto')
+     .attr('font-size', fontSize)
+     .style('text-anchor', 'middle');
   }
 
   if (fd.viz_type === 'big_number') {
