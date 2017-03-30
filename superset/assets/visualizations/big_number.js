@@ -59,21 +59,25 @@ function bigNumberVis(slice, payload) {
 
   let y = height / 2;
   let g = svg.append('g');
+
+  const formattedNumber = f(v);
+
   // Printing big number
   g.append('g').attr('class', 'digits')
-  .attr('opacity', 1)
-  .append('text')
-  .attr('x', width / 2)
-  .attr('y', y)
-  .attr('class', 'big')
-  .attr('alignment-baseline', 'middle')
-  .attr('id', 'bigNumber')
-  .style('font-weight', 'bold')
-  .style('cursor', 'pointer')
-  .text(f(v))
-  .style('font-size', d3.min([height, width]) / 3.5)
-  .style('text-anchor', 'middle')
-  .attr('fill', 'black');
+   .attr('opacity', 1)
+   .append('text')
+   .attr('x', width / 2)
+   .attr('y', y)
+   .attr('class', 'big')
+   .attr('alignment-baseline', 'middle')
+   .attr('id', 'bigNumber')
+   .style('font-weight', 'bold')
+   .style('cursor', 'pointer')
+   .text(formattedNumber)
+   .attr('font-family', 'Roboto')
+   .attr('font-size', (width / formattedNumber.length) * 1.3)
+   .style('text-anchor', 'middle')
+   .attr('fill', 'black');
 
   // Printing big number subheader text
   if (json.subheader !== null) {
