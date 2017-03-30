@@ -94,7 +94,6 @@ function bigNumberVis(slice, payload) {
 
   if (fd.viz_type === 'big_number') {
     // Drawing trend line
-
     g.append('path')
     .attr('d', function () {
       return line(data);
@@ -152,6 +151,47 @@ function bigNumberVis(slice, payload) {
     g.selectAll('text')
     .style('font-size', '10px');
 
+    // Define the div for the tooltip
+    const tooltipEl =
+      d3.select('body')
+        .append('div')
+        .attr('class', 'line-tooltip')
+        .attr('width', 200)
+        .attr('height', 200)
+        .style('opacity', 0);
+
+    const renderTooltip = (d) => {
+      const date = formatDate(d[0]);
+      const value = f(d[1]);
+      return `
+        <div>
+          <span style="float: left; margin-right: 20px;"><strong>${date}</strong></span>
+          <span style="float: right">${value}</span>
+        </div>
+      `;
+    }
+
+    // Add the scatterplot and trigger the mouse events for the tooltips
+    svg
+      .selectAll('dot')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('r', 10)
+      .attr('cx', d => scaleX(d[0]))
+      .attr('cy', d => scaleY(d[1]))
+      .attr('fill-opacity', '0')
+      .on('mouseover', (d) => {
+        tooltipEl.html(renderTooltip(d))
+          .style('left', (d3.event.pageX) + 'px')
+          .style('top', (d3.event.pageY - 28) + 'px');
+        tooltipEl.transition().duration(200).style('opacity', .9);
+      })
+      .on('mouseout', (d) => {
+        tooltipEl.transition().duration(500).style('opacity', 0);
+      });
+
+    // show hide x/y axis on mouseover/out
     div.on('mouseover', function () {
       const el = d3.select(this);
       el.selectAll('path')
