@@ -3,6 +3,15 @@ import { formatDate } from '../javascripts/modules/dates';
 
 require('./big_number.css');
 
+function getNumTicks(data){
+  let divisor = 6;
+  // if showing on dashboard, show fewer ticks
+  if (document.getElementsByClassName('dashboard').length > 0) {
+    divisor = 10;
+  }
+  return data.length / divisor;
+}
+
 function bigNumberVis(slice, payload) {
   const div = d3.select(slice.selector);
   // Define the percentage bounds that define color from red to green
@@ -39,7 +48,7 @@ function bigNumberVis(slice, payload) {
   const dateExt = d3.extent(data, (d) => d[0]);
   const valueExt = d3.extent(data, (d) => d[1]);
 
-  const margin = 20;
+  const margin = 30;
   const scaleX = d3.time.scale.utc().domain(dateExt).range([margin, width - margin]);
   const scaleY = d3.scale.linear().domain(valueExt).range([height - (margin), margin]);
   const colorRange = [d3.hsl(0, 1, 0.3), d3.hsl(120, 1, 0.3)];
@@ -131,12 +140,12 @@ function bigNumberVis(slice, payload) {
     const xAxis = d3.svg.axis()
     .scale(scaleX)
     .orient('bottom')
-    .ticks(4)
+    .tickValues(scaleX.ticks(getNumTicks(data)).concat(scaleX.domain()))
     .tickFormat(formatDate);
     g.call(xAxis);
     g.attr('transform', 'translate(0,' + (height - margin) + ')');
 
-    g = gAxis.append('g').attr('transform', 'translate(' + (width - margin) + ',0)');
+    g = gAxis.append('g').attr('transform', `translate(${margin}, 0)`);
     const yAxis = d3.svg.axis()
     .scale(scaleY)
     .orient('left')
@@ -147,9 +156,6 @@ function bigNumberVis(slice, payload) {
     .style('text-anchor', 'end')
     .attr('y', '-7')
     .attr('x', '-4');
-
-    g.selectAll('text')
-    .style('font-size', '10px');
 
     // Define the div for the tooltip
     const tooltipEl =
