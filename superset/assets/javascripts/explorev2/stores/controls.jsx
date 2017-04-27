@@ -78,7 +78,7 @@ export const controls = {
     multi: true,
     label: 'Ordering',
     default: [],
-    description: 'Choose a column to order by.',
+    description: 'Choose one or many columns to order by',
     mapStateToProps: state => ({
       choices: (state.datasource) ? state.datasource.order_by_choices : [],
     }),
