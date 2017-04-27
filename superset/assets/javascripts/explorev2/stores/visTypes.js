@@ -610,6 +610,7 @@ const visTypes = {
           ['date_filter', 'instant_filtering'],
           ['groupby'],
           ['metric'],
+          ['order_by_cols'],
         ],
       },
     ],
