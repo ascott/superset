@@ -12,6 +12,7 @@ import {
   Tooltip,
   Collapse,
 } from 'react-bootstrap';
+import SplitPane from 'react-split-pane';
 
 import Button from '../../components/Button';
 
@@ -101,7 +102,6 @@ class SqlEditor extends React.PureComponent {
     const mysteryVerticalHeight = 50;
     return window.innerHeight - tabNavHeight - navBarHeight - mysteryVerticalHeight;
   }
-
   render() {
     const qe = this.props.queryEditor;
     let limitWarning = null;
@@ -213,21 +213,29 @@ class SqlEditor extends React.PureComponent {
             md={this.props.hideLeftBar ? 12 : 8}
             lg={this.props.hideLeftBar ? 12 : 9}
           >
-            <AceEditorWrapper
-              actions={this.props.actions}
-              onBlur={this.setQueryEditorSql.bind(this)}
-              queryEditor={this.props.queryEditor}
-              onAltEnter={this.runQuery.bind(this)}
-              sql={this.props.queryEditor.sql}
-              tables={this.props.tables}
-            />
-            {editorBottomBar}
-            <br />
-            <SouthPane
-              editorQueries={this.props.editorQueries}
-              dataPreviewQueries={this.props.dataPreviewQueries}
-              actions={this.props.actions}
-            />
+            <div style={{ height: '100%', width: '100%' }}>
+              <SplitPane split="horizontal" defaultSize="50%">
+                <div width="100%">
+                  <AceEditorWrapper
+                    actions={this.props.actions}
+                    onBlur={this.setQueryEditorSql.bind(this)}
+                    queryEditor={this.props.queryEditor}
+                    onAltEnter={this.runQuery.bind(this)}
+                    sql={this.props.queryEditor.sql}
+                    tables={this.props.tables}
+                  />
+                </div>
+                <div width="100%">
+                  {editorBottomBar}
+                  <br />
+                  <SouthPane
+                    editorQueries={this.props.editorQueries}
+                    dataPreviewQueries={this.props.dataPreviewQueries}
+                    actions={this.props.actions}
+                  />
+                </div>
+              </SplitPane>
+            </div>
           </Col>
         </Row>
       </div>

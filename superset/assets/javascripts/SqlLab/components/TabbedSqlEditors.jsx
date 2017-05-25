@@ -205,7 +205,8 @@ class TabbedSqlEditors extends React.PureComponent {
               }
             </div>
           </div>
-        </Tab>);
+        </Tab>
+      );
     });
     return (
       <Tabs
